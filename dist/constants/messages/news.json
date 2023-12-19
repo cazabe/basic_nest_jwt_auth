@@ -1,0 +1,10 @@
+{
+    "news.error.create": "Se ha producido un error al crear la noticia, por favor inténtelo más tarde.",
+    "news.error.get": "Se ha producido un error al cargar las noticias, por favor inténtelo más tarde.",
+    "news.error.update": "Se ha producido un error al actualizar la noticia, por favor, inténtelo más tarde.",
+    "news.error.delete": "Se ha producido un error al eliminar la noticia, inténtelo de nuevo más tarde.",
+    "news.error.noFound": "No se encontro la noticia",
+    "news.success.create": "La noticia se creo correctamente.",
+    "news.success.update": "Datos actualizo satisfactoriamente.",
+    "news.success.delete": "Noticia eliminado satisfactoriamente."
+}

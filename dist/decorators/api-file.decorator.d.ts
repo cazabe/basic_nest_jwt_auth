@@ -1,0 +1,1 @@
+export declare function ApiFile(fieldName: string, directory: string): <TFunction extends Function, Y>(target: object | TFunction, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Y>) => void;
