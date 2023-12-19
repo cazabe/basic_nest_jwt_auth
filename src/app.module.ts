@@ -1,37 +1,35 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { APP_FILTER } from '@nestjs/core';
-import { DataSourceConfig } from './config';
-import { UsersModule } from './modules/users/users.module';
-import { BlogsModule } from './modules/blogs/blogs.module';
-import { NewsModule } from './modules/news/news.module';
 import { AuthModule } from './modules/auth/auth.module';
-import { FilesModule } from './modules/files/files.module';
-import { AllExceptionsFilter } from './util';
-import { TermsTaxonomyModule } from './modules/terms-taxonomy/terms-taxonomy.module';
-import { SettingsModule } from './modules/settings/settings.module';
+import { UserModule } from './modules/user/user.module';
+import { User } from './modules/user/entity/user.entity';
+import { MailModule } from './modules/mailer/mailer.module';
 
-@Module({
-  imports: [
-    ConfigModule.forRoot({
-      envFilePath: `.${process.env.NODE_ENV}.env`,
-      isGlobal: true,
-    }),
-    TypeOrmModule.forRoot({ ...DataSourceConfig }),
-    UsersModule,
-    BlogsModule,
-    NewsModule,
-    AuthModule,
-    FilesModule,
-    TermsTaxonomyModule,
-    SettingsModule,
-  ],
-  providers: [
-    {
-      provide: APP_FILTER,
-      useClass: AllExceptionsFilter,
-    },
-  ],
-})
-export class AppModule {}
+const configService = new ConfigService();
+@Module(
+  {
+    imports: [
+      ConfigModule.forRoot({
+        isGlobal: true,
+      }),
+      TypeOrmModule.forRoot({
+        type: 'postgres',
+        host: 'localhost',
+        port: configService.get('DB_PORT'),
+        username: configService.get('DB_USER'),
+        password: configService.get('DB_PASSWORD'),
+        database: configService.get('DB_NAME'),
+        entities: [User],
+        synchronize: true,
+      }),
+      AuthModule,
+      UserModule,
+      MailModule
+    ],
+    controllers: [AppController],
+    providers: [AppService],
+  })
+export class AppModule { }

@@ -8,31 +8,38 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthModule = void 0;
 const common_1 = require("@nestjs/common");
+const auth_controller_1 = require("./auth.controller");
+const auth_service_1 = require("./auth.service");
+const user_module_1 = require("../user/user.module");
 const jwt_1 = require("@nestjs/jwt");
+const config_1 = require("@nestjs/config");
 const core_1 = require("@nestjs/core");
-const guards_1 = require("../../guards");
-const users_service_1 = require("../users/services/users.service");
-const auth_controller_1 = require("./controllers/auth.controller");
-const auth_service_1 = require("./services/auth.service");
+const auth_guard_1 = require("./guards/auth.guard");
 let AuthModule = exports.AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            jwt_1.JwtModule.register({
-                global: true,
-                secret: process.env.JWT_SECRET,
-                signOptions: { expiresIn: '1h' },
+            user_module_1.UserModule,
+            jwt_1.JwtModule.registerAsync({
+                useFactory: (config) => {
+                    return {
+                        secret: config.get('JWT_SECRET'),
+                        signOptions: {
+                            expiresIn: '8h',
+                        },
+                    };
+                },
+                inject: [config_1.ConfigService],
             }),
         ],
         controllers: [auth_controller_1.AuthController],
         providers: [
-            auth_service_1.AuthService,
-            users_service_1.UsersService,
             {
                 provide: core_1.APP_GUARD,
-                useClass: guards_1.AuthGuard,
+                useClass: auth_guard_1.AuthGuard,
             },
+            auth_service_1.AuthService
         ],
     })
 ], AuthModule);

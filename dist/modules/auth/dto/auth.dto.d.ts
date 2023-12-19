@@ -1,5 +1,4 @@
-import { AuthBody } from '../interfaces/auth.interface';
-export declare class AuthDTO implements AuthBody {
+export declare class AuthDto {
     username: string;
     password: string;
 }

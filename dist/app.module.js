@@ -8,42 +8,39 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
+const app_controller_1 = require("./app.controller");
+const app_service_1 = require("./app.service");
 const config_1 = require("@nestjs/config");
 const typeorm_1 = require("@nestjs/typeorm");
-const core_1 = require("@nestjs/core");
-const config_2 = require("./config");
-const users_module_1 = require("./modules/users/users.module");
-const blogs_module_1 = require("./modules/blogs/blogs.module");
-const news_module_1 = require("./modules/news/news.module");
 const auth_module_1 = require("./modules/auth/auth.module");
-const files_module_1 = require("./modules/files/files.module");
-const util_1 = require("./util");
-const terms_taxonomy_module_1 = require("./modules/terms-taxonomy/terms-taxonomy.module");
-const settings_module_1 = require("./modules/settings/settings.module");
+const user_module_1 = require("./modules/user/user.module");
+const user_entity_1 = require("./modules/user/entity/user.entity");
+const mailer_module_1 = require("./modules/mailer/mailer.module");
+const configService = new config_1.ConfigService();
 let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             config_1.ConfigModule.forRoot({
-                envFilePath: `.${process.env.NODE_ENV}.env`,
                 isGlobal: true,
             }),
-            typeorm_1.TypeOrmModule.forRoot({ ...config_2.DataSourceConfig }),
-            users_module_1.UsersModule,
-            blogs_module_1.BlogsModule,
-            news_module_1.NewsModule,
+            typeorm_1.TypeOrmModule.forRoot({
+                type: 'postgres',
+                host: 'localhost',
+                port: configService.get('DB_PORT'),
+                username: configService.get('DB_USER'),
+                password: configService.get('DB_PASSWORD'),
+                database: configService.get('DB_NAME'),
+                entities: [user_entity_1.User],
+                synchronize: true,
+            }),
             auth_module_1.AuthModule,
-            files_module_1.FilesModule,
-            terms_taxonomy_module_1.TermsTaxonomyModule,
-            settings_module_1.SettingsModule,
+            user_module_1.UserModule,
+            mailer_module_1.MailModule
         ],
-        providers: [
-            {
-                provide: core_1.APP_FILTER,
-                useClass: util_1.AllExceptionsFilter,
-            },
-        ],
+        controllers: [app_controller_1.AppController],
+        providers: [app_service_1.AppService],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map
